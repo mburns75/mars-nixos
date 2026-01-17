@@ -1,0 +1,19 @@
+# Nix build artifacts
+result
+result-*
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Any local-only scripts or notes you don't want to commit
+local-notes.txt
+TODO.local
+
+# Home-manager generations (if you want to avoid committing these)
+# Uncomment if you don't want to track home-manager state
+# users/*/home-manager-generations

@@ -26,6 +26,7 @@
 
   home.packages = with pkgs; [
     alacritty
+    brave
     btop
     git
     git-crypt
