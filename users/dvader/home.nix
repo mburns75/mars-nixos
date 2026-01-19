@@ -19,6 +19,20 @@
     enable = true;
   };
 
+  programs.neovim = {
+    enable = true;
+    vimAlias = true;
+    viAlias = true;
+    extraPackages = with pkgs; [
+      stylua
+      lua-language-server
+      yaml-language-server
+      vscode-langservers-extracted
+      marksman
+      ruff
+      ];
+  };
+
   services.gpg-agent = {
     enable = true;
     pinentry.package = pkgs.pinentry-qt;
@@ -32,7 +46,6 @@
     git-crypt
     gnupg
     nwg-displays
-    vimPlugins.LazyVim
     walker
     wget
     # # It is sometimes useful to fine-tune packages, for example, by applying

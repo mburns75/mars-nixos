@@ -1,4 +1,5 @@
 #!/bin/sh
 pushd ~/.dotfiles
-home-manager switch -f ./users/dvader/home.nix
+nix build .#homeManagerConfigurations.dvader.activationPackage
+./result/activate
 popd
