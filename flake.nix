@@ -3,13 +3,16 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hyprland.url = "github:hyprwm/Hyprland";
   };
 
-  outputs = { nixpkgs, home-manager, ... }: 
+  outputs = inputs@{ nixpkgs, home-manager, ... }: 
   let
     system = "x86_64-linux";
 
@@ -33,7 +36,7 @@
     nixosConfigurations = {
       mars = lib.nixosSystem {
         inherit system;
-
+	specialArgs = { inherit inputs; };
 	modules = [
           ./system/configuration.nix
 	];
