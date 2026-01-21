@@ -75,10 +75,11 @@
     powerOnBoot = true;
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Users
   users.users.dvader = {
     isNormalUser = true;
     description = "Matthew";
+    shell = pkgs.zsh;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
   };
@@ -91,6 +92,7 @@
   programs.firefox.enable = true;
   programs.waybar.enable = true;
   programs.nm-applet.enable = true;
+  programs.zsh.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

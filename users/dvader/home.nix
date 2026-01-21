@@ -251,6 +251,12 @@
   programs.zsh = {
     enable = true;
     oh-my-zsh.enable = true;
+    #ensure nix-profile paths are available to zsh
+    initContent = '';  
+      if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
+        . $HOME/.nix-profile/etc/profile.d/nix.sh
+      fi
+    '';
   };
 
   services.gpg-agent = {
