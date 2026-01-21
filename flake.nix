@@ -10,15 +10,16 @@
     };
 
     hyprland.url = "github:hyprwm/Hyprland";
+
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }: 
   let
-    system = "x86_64-linux";
-
     pkgs = import nixpkgs {
-      inherit system;
-      config = { allowUnfree = true; };
+      system = "x86_64-linux";
+      config = {
+        allowUnfree = true; 
+      };
     };
 
     lib = nixpkgs.lib;
@@ -27,6 +28,9 @@
     homeManagerConfigurations = {
       dvader = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
+	extraSpecialArgs = { 
+	  inherit inputs;
+	};
 	modules = [
 	  ./users/dvader/home.nix 
 	];
@@ -35,11 +39,13 @@
 
     nixosConfigurations = {
       mars = lib.nixosSystem {
-        inherit system;
-	specialArgs = { inherit inputs; };
-	modules = [
-          ./system/configuration.nix
+        modules = [
+          {
+	    nixpkgs.hostPlatform = "x86_64-linux";
+	  }
+	  ./system/configuration.nix
 	];
+	specialArgs = { inherit inputs; };
       };
     };
   };
