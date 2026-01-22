@@ -32,7 +32,7 @@
       ];
 
       # Program variables
-      "$terminal" = "alacritty";
+      "$terminal" = "kitty";
       "$fileManager" = "dolphin";
       "$browser" = "firefox";
       "$menu" = "walker --show drun";
@@ -250,12 +250,49 @@
 
   programs.zsh = {
     enable = true;
-    oh-my-zsh.enable = true;
+    plugins = [
+      {
+        name = "powerlevel10k";
+	src = pkgs.zsh-powerlevel10k;
+	file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      }
+    ];
+    oh-my-zsh = {
+      enable = true;
+      theme = "robbyrussell";
+      plugins = [
+        "git"
+        "sudo"
+      ];
+    };
     #ensure nix-profile paths are available to zsh
     initContent = '';  
       if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
         . $HOME/.nix-profile/etc/profile.d/nix.sh
       fi
+      [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+    '';
+  };
+
+  programs.kitty = {
+    enable = true;
+    font = {
+      package = pkgs.nerd-fonts.jetbrains-mono; 
+      name = "Jetbrains Mono Nerd Font";
+      size = 12;
+    };
+    enableGitIntegration = true;
+    settings = {
+      disable_ligatures = false;
+      enable_audio_bell = false;
+    };
+    extraConfig = ''
+      cursor_shape block
+      url_style curly
+      remember_window_size no
+      window_padding_width 15
+      background_opacity 0.80
+      sync_to_monitor no
     '';
   };
 
@@ -266,14 +303,12 @@
 
   # Home Packages Installed
   home.packages = with pkgs; [
-    alacritty
     brave
     brightnessctl
     btop
     git
     git-crypt
     gnupg
-    kitty
     nwg-displays
     playerctl
     swww
@@ -309,7 +344,7 @@
     ".config/alacritty/alacritty.yaml".text = ''
       env:
         TERM: xterm-256color
-    '';
+     '';
   };
 
   # Home Manager can also manage your environment variables through

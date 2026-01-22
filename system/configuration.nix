@@ -97,13 +97,64 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # System Package
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     bluetui
     impala
     wiremix
+  ];
+
+  # System Fonts
+  fonts.packages = with pkgs; [
+    nerd-fonts.zed-mono
+    nerd-fonts.victor-mono
+    nerd-fonts.ubuntu-sans
+    nerd-fonts.ubuntu-mono
+    nerd-fonts.ubuntu
+    nerd-fonts.tinos
+    nerd-fonts.terminess-ttf
+    nerd-fonts.symbols-only
+    nerd-fonts.space-mono
+    nerd-fonts.shure-tech-mono
+    nerd-fonts.sauce-code-pro
+    nerd-fonts.roboto-mono
+    nerd-fonts.recursive-mono
+    nerd-fonts.proggy-clean-tt
+    nerd-fonts.profont
+    nerd-fonts.overpass
+    nerd-fonts.open-dyslexic
+    nerd-fonts.noto
+    nerd-fonts.mononoki
+    nerd-fonts.monoid
+    nerd-fonts.monofur
+    nerd-fonts.monaspace
+    nerd-fonts.meslo-lg
+    nerd-fonts.martian-mono
+    nerd-fonts.lilex
+    nerd-fonts.liberation
+    nerd-fonts.lekton
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.iosevka-term-slab
+    nerd-fonts.iosevka-term
+    nerd-fonts.iosevka
+    nerd-fonts.intone-mono
+    nerd-fonts.inconsolata-lgc
+    nerd-fonts.inconsolata-go
+    nerd-fonts.inconsolata
+    nerd-fonts.im-writing
+    nerd-fonts.hurmit
+    nerd-fonts.heavy-data
+    nerd-fonts.hasklug
+    nerd-fonts.hack
+    nerd-fonts.gohufont
+    nerd-fonts.go-mono
+    nerd-fonts.geist-mono
+    nerd-fonts.fira-mono
+    nerd-fonts.fantasque-sans-mono
+    nerd-fonts.envy-code-r
+    nerd-fonts.droid-sans-mono
+    nerd-fonts.departure-mono
+
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
