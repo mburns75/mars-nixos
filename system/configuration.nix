@@ -106,6 +106,7 @@
 
   # System Fonts
   fonts.packages = with pkgs; [
+    inter
     nerd-fonts.zed-mono
     nerd-fonts.victor-mono
     nerd-fonts.ubuntu-sans

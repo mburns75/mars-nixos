@@ -35,7 +35,7 @@
       "$terminal" = "kitty";
       "$fileManager" = "dolphin";
       "$browser" = "firefox";
-      "$menu" = "walker --show drun";
+      "$menu" = "rofi -show drun";
       "$mainMod" = "SUPER";
 
       # Monitor configuration
@@ -234,6 +234,10 @@
   };
 
   # Enabled Programs
+  programs.waybar = {
+    enable = true;
+  };
+
   programs.neovim = {
     enable = true;
     vimAlias = true;
@@ -248,29 +252,67 @@
       ];
   };
 
+  programs.rofi = {
+    enable = true;
+    location = "center";
+    cycle = true;
+    font = "Jetbrains Mono Nerd Font 12";
+    terminal = "${pkgs.kitty}/bin/kitty";
+    #theme = "gruvbox-dark-hard";
+
+    extraConfig = {
+      #modi = "drun, run, calc, emoji";
+      show-icons = true;
+      drun-display-format = "{name}";
+    };
+    theme = let
+      inherit (config.lib.formats.rasi) mkLiteral;
+    in {
+      "*" = {
+        background-color = mkLiteral "transparent";
+        text-color = mkLiteral "#ebdbb2";
+       };
+    
+      window = {
+        background-color = mkLiteral "#282828";
+        border = mkLiteral "2px";
+        border-color = mkLiteral "#458588";
+        padding = mkLiteral "15px";
+	width = mkLiteral "50%";
+      };
+    
+      listview = {
+        lines = 8;
+        scrollbar = false;
+      };
+    
+      element = {
+        padding = mkLiteral "8px";
+        background-color = mkLiteral "transparent";  # No alternating colors
+      };
+    
+      "element selected" = {
+        background-color = mkLiteral "#458588";
+        text-color = mkLiteral "#282828";
+      };
+    };
+
+    plugins = with pkgs; [
+      rofi-calc
+      rofi-emoji
+    ];
+  };
+
   programs.zsh = {
     enable = true;
-    plugins = [
-      {
-        name = "powerlevel10k";
-	src = pkgs.zsh-powerlevel10k;
-	file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-      }
-    ];
-    oh-my-zsh = {
-      enable = true;
-      theme = "robbyrussell";
-      plugins = [
-        "git"
-        "sudo"
-      ];
+    shellAliases = {
+      ls = "eza -lah --icons";
     };
     #ensure nix-profile paths are available to zsh
     initContent = '';  
       if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
         . $HOME/.nix-profile/etc/profile.d/nix.sh
       fi
-      [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
     '';
   };
 
@@ -279,9 +321,10 @@
     font = {
       package = pkgs.nerd-fonts.jetbrains-mono; 
       name = "Jetbrains Mono Nerd Font";
-      size = 12;
+      size = 11;
     };
     enableGitIntegration = true;
+    themeFile = "GruvboxMaterialDarkHard";
     settings = {
       disable_ligatures = false;
       enable_audio_bell = false;
@@ -293,7 +336,16 @@
       window_padding_width 15
       background_opacity 0.80
       sync_to_monitor no
+      confirm_os_window_close 0 
     '';
+  };
+
+  programs.eza = {
+    enable = true;
+    enableZshIntegration = true;
+    git = true;
+    icons = "always";
+    colors = "always";
   };
 
   services.gpg-agent = {
@@ -309,10 +361,10 @@
     git
     git-crypt
     gnupg
+    nitch
     nwg-displays
     playerctl
     swww
-    walker
     wget
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -341,10 +393,6 @@
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
-    ".config/alacritty/alacritty.yaml".text = ''
-      env:
-        TERM: xterm-256color
-     '';
   };
 
   # Home Manager can also manage your environment variables through
