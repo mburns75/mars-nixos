@@ -84,6 +84,14 @@
     packages = with pkgs; [];
   };
 
+#  # Enable Stylix theming
+#  stylix = {
+#    enable = true;
+#    image = ./wallpaper/gruvbox-pixel-city.png; 
+#    polarity = "dark";
+#    targets.neovim.enable = true;
+#  };
+
   # Enable Programs
   programs.hyprland = {
     enable = true;
@@ -102,6 +110,7 @@
     bluetui
     impala
     wiremix
+    wlogout
   ];
 
   # System Fonts

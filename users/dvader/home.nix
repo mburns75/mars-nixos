@@ -1,6 +1,10 @@
 { config, pkgs, inputs, ... }:
 
 {
+  imports = [
+    inputs.walker.homeManagerModules.default
+  ];
+
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "dvader";
@@ -19,6 +23,14 @@
     enable = true;
   };
 
+  # Enable Stylix theming
+  stylix = {
+    enable = true;
+    image = ./wallpaper/gruvbox-pixel-city.png; 
+    polarity = "dark";
+    targets.neovim.enable = true;
+  };
+
   # Hyperland
   wayland.windowManager.hyprland = {
     enable = true;
@@ -35,7 +47,7 @@
       "$terminal" = "kitty";
       "$fileManager" = "dolphin";
       "$browser" = "firefox";
-      "$menu" = "rofi -show drun";
+      "$menu" = "walker";
       "$mainMod" = "SUPER";
 
       # Monitor configuration
@@ -50,6 +62,7 @@
         "swww-daemon"
 	"nm-applet &"
 	"hyprpaper"
+	"walker --gapplication-service"
       ];
 
       # General settings
@@ -57,8 +70,6 @@
         gaps_in = 5;
 	gaps_out = 20;
 	border_size = 2;
-	"col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-	"col.inactive_border" = "rgba(595959aa)";
 	resize_on_border = false;
 	allow_tearing = false;
 	layout = "dwindle";
@@ -73,7 +84,6 @@
           enabled = true;
 	  range = 4;
 	  render_power = 3;
-	  color = "rgba(1a1a1aee)";	  
 	};
 	blur = {
           enabled = true;
@@ -236,6 +246,322 @@
   # Enabled Programs
   programs.waybar = {
     enable = true;
+    
+    settings = {
+      mainBar = {
+        layer = "top";
+        
+        modules-left = [
+          "custom/launcher"
+          "cpu"
+          "memory"
+          "network"
+        ];
+        
+        modules-center = [
+          "hyprland/workspaces"
+        ];
+        
+        modules-right = [
+          "custom/wallpaper"
+          "backlight"
+          "pulseaudio"
+	  "battery"
+          "clock"
+          "custom/power"
+        ];
+        
+        "hyprland/workspaces" = {
+          format = "{id}";
+          on-click = "activate";
+          all-outputs = true;
+          active-only = false;
+        };
+        
+        "pulseaudio" = {
+          tooltip = false;
+          scroll-step = 5;
+          format = "{icon} {volume}%";
+          format-muted = "{icon} {volume}%";
+          on-click = "pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          format-icons = {
+            default = ["" "" ""];
+          };
+        };
+        
+        "network" = {
+          tooltip = false;
+          format-wifi = "   {essid} ";
+          format-ethernet = " 󰈀 ";
+        };
+        
+        "backlight" = {
+          tooltip = false;
+          format = " {}%";
+          interval = 1;
+          on-scroll-up = "brightnessctl -e4 -n2 set 5%+";
+          on-scroll-down = "brightnessctl -e4 -n2 set 5%-";
+        };
+        
+        "battery" = {
+          states = {
+            good = 95;
+            warning = 30;
+            critical = 20;
+          };
+          format = "{icon}  {capacity}%";
+          format-charging = "󱐋 {capacity}%";
+          format-plugged = " {capacity}%";
+          format-alt = "{time} {icon}";
+          format-icons = ["" "" "" "" ""];
+        };
+        
+        "clock" = {
+	  interval = 60;
+          format = "{:%I:%M %p}";
+	  format-alt = "{:%-m/%-d/%Y}";
+	  tooltip = true;
+	  tooltip-format = "{:%I:%M %p %A, %B %d, %Y}";
+        };
+        
+        "cpu" = {
+          interval = 15;
+          format = " {}%";
+          max-length = 10;
+        };
+        
+        "memory" = {
+          interval = 30;
+          format = " {}%";
+          max-length = 10;
+        };
+        
+        "custom/launcher" = {
+          format = " ";
+          on-click = "${pkgs.walker}/bin/walker";
+          on-click-right = "killall walker";
+        };
+        
+        "custom/power" = {
+          format = "󰐥 ";
+          on-click = "${pkgs.wlogout}/bin/wlogout";
+        };
+        
+        "custom/wallpaper" = {
+          format = " ";
+          on-click = "pkill swww || swww init";
+        };
+      };
+    };
+    
+    style = ''
+      * {
+        border: none;
+        border-radius: 10px;
+        font-family: "JetbrainsMono Nerd Font";
+        font-size: 15px;
+        min-height: 10px;
+      }
+      
+      window#waybar {
+        background: transparent;
+      }
+      
+      window#waybar.hidden {
+        opacity: 0.2;
+      }
+      
+      #window {
+        margin-top: 6px;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 10px;
+        transition: none;
+        color: transparent;
+        background: transparent;
+      }
+      
+      #workspaces {
+        margin-top: 6px;
+        margin-left: 12px;
+        font-size: 4px;
+        margin-bottom: 0px;
+        border-radius: 10px;
+        background: #1d2021;
+        transition: none;
+      }
+      
+      #workspaces button {
+        transition: none;
+        color: #d4be98;
+        background: transparent;
+        font-size: 16px;
+        border-radius: 2px;
+      }
+      
+      #workspaces button.active {
+        color: #a9b665;
+        border-top: 2px solid #a9b665;
+        border-bottom: 2px solid #a9b665;
+      }
+      
+      #workspaces button:hover {
+        transition: none;
+        box-shadow: inherit;
+        text-shadow: inherit;
+        color: #d8a657;
+        border-color: #ea6962;
+      }
+      
+      #workspaces button.active:hover {
+        color: #ea6962;
+      }
+      
+      #network {
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-bottom: 0px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #7daea3;
+      }
+      
+      #pulseaudio {
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-bottom: 0px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #d8a657;
+      }
+      
+      #battery {
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-bottom: 0px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #89b482;
+      }
+      
+      #battery.charging, #battery.plugged {
+        color: #1d2021;
+        background-color: #89b482;
+      }
+      
+      #battery.critical:not(.charging) {
+        background-color: #ea6962;
+        color: #1d2021;
+        animation-name: blink;
+        animation-duration: 0.5s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+      }
+      
+      @keyframes blink {
+        to {
+          background-color: #ea6962;
+          color: #d4be98;
+        }
+      }
+      
+      #backlight {
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-bottom: 0px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #e78a4e;
+      }
+      
+      #clock {
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-bottom: 0px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #a9b665;
+      }
+      
+      #memory {
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        margin-bottom: 0px;
+        padding-right: 10px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #d3869b;
+      }
+      
+      #cpu {
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        margin-bottom: 0px;
+        padding-right: 10px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #7daea3;
+	font-family: "JetBrainsMono Nerd Font";
+      }
+      
+      #custom-launcher {
+        font-size: 24px;
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        padding-right: 5px;
+        border-radius: 10px;
+        transition: none;
+        color: #7daea3;
+        background: #1d2021;
+      }
+      
+      #custom-power {
+        font-size: 20px;
+        margin-top: 6px;
+        margin-left: 8px;
+        margin-right: 8px;
+        padding-left: 10px;
+        padding-right: 5px;
+        margin-bottom: 0px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #ea6962;
+      }
+      
+      #custom-wallpaper {
+        margin-top: 6px;
+        margin-left: 8px;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-bottom: 0px;
+        border-radius: 10px;
+        transition: none;
+        color: #1d2021;
+        background: #a9b665;
+      }
+    '';
   };
 
   programs.neovim = {
@@ -250,57 +576,6 @@
       marksman
       ruff
       ];
-  };
-
-  programs.rofi = {
-    enable = true;
-    location = "center";
-    cycle = true;
-    font = "Jetbrains Mono Nerd Font 12";
-    terminal = "${pkgs.kitty}/bin/kitty";
-    #theme = "gruvbox-dark-hard";
-
-    extraConfig = {
-      #modi = "drun, run, calc, emoji";
-      show-icons = true;
-      drun-display-format = "{name}";
-    };
-    theme = let
-      inherit (config.lib.formats.rasi) mkLiteral;
-    in {
-      "*" = {
-        background-color = mkLiteral "transparent";
-        text-color = mkLiteral "#ebdbb2";
-       };
-    
-      window = {
-        background-color = mkLiteral "#282828";
-        border = mkLiteral "2px";
-        border-color = mkLiteral "#458588";
-        padding = mkLiteral "15px";
-	width = mkLiteral "50%";
-      };
-    
-      listview = {
-        lines = 8;
-        scrollbar = false;
-      };
-    
-      element = {
-        padding = mkLiteral "8px";
-        background-color = mkLiteral "transparent";  # No alternating colors
-      };
-    
-      "element selected" = {
-        background-color = mkLiteral "#458588";
-        text-color = mkLiteral "#282828";
-      };
-    };
-
-    plugins = with pkgs; [
-      rofi-calc
-      rofi-emoji
-    ];
   };
 
   programs.zsh = {
@@ -348,6 +623,70 @@
     colors = "always";
   };
 
+  programs.walker.enable = true;
+
+  programs.wlogout = {
+    enable = true;
+    layout = [
+#      {
+#        label = " ";
+#	action = "hyprlock";
+#	text = " ";
+#	keybind = "l";
+#      }
+      {
+        label = "󰍃";
+	action = "hyprctl dispatch exit";
+	text = "󰍃";
+	keybind = "e";
+      }
+      {
+        label = "󰐥";
+	action = "systemctl poweroff";
+	text = "󰐥";
+	keybind = "s";
+      }
+      {
+        label = "󰜉";
+	action = "systemctl reboot";
+	text = "󰜉";
+	keybind = "r";
+      }
+    ];
+    style = ''
+      * {
+        background-image: none;
+        box-shadow: none;
+	font-family: "JetBrainsMono Nerd Font";
+	font-size: 150px;
+      }
+      
+      window {
+        background-color: rgba(29, 32, 33, 0.95);
+      }
+      
+      button {
+        color: #d4be98;
+        background-color: #1d2021;
+        border-style: solid;
+        border-width: 2px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20%;
+        border-radius: 10px;
+        margin: 40px;
+	min-width: 20px;
+	min-height: 20px;
+      }
+      
+      button:focus, button:active, button:hover {
+        background-color: #7daea3;
+        color: #1d2021;
+        outline-style: none;
+      }
+    '';
+    };
+
   services.gpg-agent = {
     enable = true;
     pinentry.package = pkgs.pinentry-qt;
@@ -361,6 +700,7 @@
     git
     git-crypt
     gnupg
+    nerd-fonts.jetbrains-mono
     nitch
     nwg-displays
     playerctl
@@ -412,7 +752,7 @@
   #  /etc/profiles/per-user/dvader/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    EDITOR = "nvim";
   };
 
   # Let Home Manager install and manage itself.

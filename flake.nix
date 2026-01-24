@@ -11,6 +11,14 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
 
+    elephant.url = "github:abenz1267/elephant";
+
+    walker = {
+      url = "github:abenz1267/walker";
+      inputs.elephant.follows = "elephant";
+    };
+
+    stylix.url = "github:danth/stylix";
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }: 
@@ -32,7 +40,8 @@
 	  inherit inputs;
 	};
 	modules = [
-	  ./users/dvader/home.nix 
+	  ./users/dvader/home.nix
+	  inputs.stylix.homeModules.stylix
 	];
       };
     };
