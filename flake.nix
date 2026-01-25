@@ -8,20 +8,18 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    hyprland.url = "github:hyprwm/Hyprland";
-
-    elephant.url = "github:abenz1267/elephant";
-
     walker = {
       url = "github:abenz1267/walker";
       inputs.elephant.follows = "elephant";
     };
-
+    hyprland.url = "github:hyprwm/Hyprland";
+    elephant.url = "github:abenz1267/elephant";
     stylix.url = "github:danth/stylix";
+    nvf.url = "github:notashelf/nvf";
+
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }: 
+  outputs = inputs@{ self, nixpkgs, home-manager, nvf, ... }: 
   let
     pkgs = import nixpkgs {
       system = "x86_64-linux";
@@ -33,6 +31,7 @@
     lib = nixpkgs.lib;
 
   in {
+
     homeManagerConfigurations = {
       dvader = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -46,13 +45,20 @@
       };
     };
 
+    packages."x86_64-linux".default =
+      (nvf.lib.neovimConfiguration {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+	modules = [ ./users/dvader/nvf-configuration.nix];
+      }).neovim;
+
     nixosConfigurations = {
       mars = lib.nixosSystem {
         modules = [
-          {
+	  {
 	    nixpkgs.hostPlatform = "x86_64-linux";
 	  }
 	  ./system/configuration.nix
+	  nvf.nixosModules.default
 	];
 	specialArgs = { inherit inputs; };
       };
