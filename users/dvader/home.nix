@@ -36,9 +36,16 @@
       };
       btop.enable = true;
       gtk.enable = true;
-      kitty.enable = true;
+      kitty = {
+        enable = false;
+	colors.enable = true;
+	fonts.enable = false;
+      };
       hyprland.enable = true;
-      waybar.enable = true;
+      waybar = {
+        enable = true;
+	colors.enable = true;
+      };
     };
   };
 
@@ -71,7 +78,6 @@
       # Autostart
       exec-once = [
         "swww-daemon"
-	"nm-applet &"
 	"hyprpaper"
 	"walker --gapplication-service"
       ];
@@ -266,10 +272,11 @@
           "cpu"
           "memory"
           "network"
+	  "hyprland/workspaces"
         ];
         
         modules-center = [
-          "hyprland/workspaces"
+          "clock"
         ];
         
         modules-right = [
@@ -277,7 +284,6 @@
           "backlight"
           "pulseaudio"
 	  "battery"
-          "clock"
           "custom/power"
         ];
         
@@ -303,6 +309,7 @@
           tooltip = false;
           format-wifi = "   {essid} ";
           format-ethernet = " 󰈀 ";
+	  on-click = "sh -c \"$terminal -e impala";
         };
         
         "backlight" = {
@@ -397,34 +404,34 @@
         font-size: 4px;
         margin-bottom: 0px;
         border-radius: 10px;
-#        background: #1d2021;
+        background: #1d2021;
         transition: none;
       }
       
       #workspaces button {
         transition: none;
- #       color: #d4be98;
+        color: #d4be98;
         background: transparent;
         font-size: 16px;
         border-radius: 2px;
       }
       
       #workspaces button.active {
-#        color: #a9b665;
-#        border-top: 2px solid #a9b665;
-#        border-bottom: 2px solid #a9b665;
+        color: #a9b665;
+        border-top: 2px solid #a9b665;
+        border-bottom: 2px solid #a9b665;
       }
       
       #workspaces button:hover {
         transition: none;
         box-shadow: inherit;
         text-shadow: inherit;
-#        color: #d8a657;
-#        border-color: #ea6962;
+        color: #d8a657;
+        border-color: #ea6962;
       }
       
       #workspaces button.active:hover {
-#        color: #ea6962;
+        color: #ea6962;
       }
       
       #network {
@@ -435,8 +442,8 @@
         margin-bottom: 0px;
         border-radius: 10px;
         transition: none;
-#        color: #1d2021;
-#        background: #7daea3;
+        color: #1d2021;
+        background: #7daea3;
       }
       
       #pulseaudio {
@@ -447,8 +454,8 @@
         margin-bottom: 0px;
         border-radius: 10px;
         transition: none;
-#        color: #1d2021;
-#        background: #d8a657;
+        color: #1d2021;
+        background: #d8a657;
       }
       
       #battery {
@@ -459,18 +466,18 @@
         margin-bottom: 0px;
         border-radius: 10px;
         transition: none;
-#        color: #1d2021;
-#        background: #89b482;
+        color: #1d2021;
+        background: #89b482;
       }
       
       #battery.charging, #battery.plugged {
-#        color: #1d2021;
-#        background-color: #89b482;
+        color: #1d2021;
+        background-color: #89b482;
       }
       
       #battery.critical:not(.charging) {
-#        background-color: #ea6962;
-#        color: #1d2021;
+        background-color: #ea6962;
+        color: #1d2021;
         animation-name: blink;
         animation-duration: 0.5s;
         animation-timing-function: linear;
@@ -480,8 +487,8 @@
       
       @keyframes blink {
         to {
-#          background-color: #ea6962;
-#          color: #d4be98;
+          background-color: #ea6962;
+          color: #d4be98;
         }
       }
       
@@ -493,8 +500,8 @@
         margin-bottom: 0px;
         border-radius: 10px;
         transition: none;
-#        color: #1d2021;
-#        background: #e78a4e;
+        color: #1d2021;
+        background: #e78a4e;
       }
       
       #clock {
@@ -505,8 +512,8 @@
         margin-bottom: 0px;
         border-radius: 10px;
         transition: none;
-#        color: #1d2021;
-#        background: #a9b665;
+        color: #1d2021;
+        background: #a9b665;
       }
       
       #memory {
@@ -517,8 +524,8 @@
         padding-right: 10px;
         border-radius: 10px;
         transition: none;
-#        color: #1d2021;
-#        background: #d3869b;
+        color: #1d2021;
+        background: #d3869b;
       }
       
       #cpu {
@@ -530,7 +537,7 @@
         border-radius: 10px;
         transition: none;
         color: #1d2021;
-#        background: #7daea3;
+        background: #7daea3;
 	font-family: "JetBrainsMono Nerd Font";
       }
       
@@ -542,8 +549,8 @@
         padding-right: 5px;
         border-radius: 10px;
         transition: none;
-#        color: #7daea3;
-#        background: #1d2021;
+        color: #7daea3;
+        background: #1d2021;
       }
       
       #custom-power {
@@ -556,8 +563,8 @@
         margin-bottom: 0px;
         border-radius: 10px;
         transition: none;
-#        color: #1d2021;
-#        background: #ea6962;
+        color: #1d2021;
+        background: #ea6962;
       }
       
       #custom-wallpaper {
@@ -568,8 +575,8 @@
         margin-bottom: 0px;
         border-radius: 10px;
         transition: none;
-#        color: #1d2021;
-#        background: #a9b665;
+        color: #1d2021;
+        background: #a9b665;
       }
     '';
   };
@@ -603,10 +610,12 @@
 
   programs.kitty = {
     enable = true;
-    font = {
-    };
     enableGitIntegration = true;
     themeFile = "GruvboxMaterialDarkHard";
+    font = {
+      name = "BigBlueTerm Nerd Font";
+      size = 11;
+    };
     settings = {
       disable_ligatures = false;
       enable_audio_bell = false;
@@ -698,6 +707,10 @@
   services.gpg-agent = {
     enable = true;
     pinentry.package = pkgs.pinentry-qt;
+  };
+
+  services.swaync = {
+    enable = true;
   };
 
   # Home Packages Installed
