@@ -26,13 +26,14 @@
   # Stylix
   stylix = {
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark-dark.yaml";
     targets.kitty.enable = true;
+    targets.neovim.enable = true;
 
     fonts = {
       monospace = {
-        package = pkgs.nerd-fonts.heavy-data;
-        name = "Heavy Data";
+        package = pkgs.iosevka;
+        name = "Iosevka";
       };
       sansSerif = {
         package = pkgs.inter;
