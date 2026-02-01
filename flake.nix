@@ -8,59 +8,52 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     walker = {
       url = "github:abenz1267/walker";
       inputs.elephant.follows = "elephant";
     };
     hyprland.url = "github:hyprwm/Hyprland";
     elephant.url = "github:abenz1267/elephant";
-    stylix.url = "github:danth/stylix";
-    nvf.url = "github:notashelf/nvf";
 
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, nvf, ... }: 
+  outputs = inputs@{ self, nixpkgs, home-manager, ... }: 
   let
+    system = "x86_64-linux";
+
     pkgs = import nixpkgs {
-      system = "x86_64-linux";
-      config = {
-        allowUnfree = true; 
-      };
+      inherit system;
+      config.allowUnfree = true; 
     };
 
     lib = nixpkgs.lib;
 
   in {
 
-    homeManagerConfigurations = {
-      dvader = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-	extraSpecialArgs = { 
-	  inherit inputs;
-	};
-	modules = [
-	  ./users/dvader/home.nix
-	  inputs.stylix.homeModules.stylix
+    nixosConfigurations = {
+      mars = lib.nixosSystem {
+        inherit system;
+	specialArgs = { inherit inputs; };
+        modules = [
+	  ./system/configuration.nix
 	];
       };
     };
 
-    packages."x86_64-linux".default =
-      (nvf.lib.neovimConfiguration {
-        pkgs = nixpkgs.legacyPackages."x86_64-linux";
-	modules = [ ./users/dvader/nvf-configuration.nix];
-      }).neovim;
-
-    nixosConfigurations = {
-      mars = lib.nixosSystem {
-        modules = [
-	  {
-	    nixpkgs.hostPlatform = "x86_64-linux";
-	  }
-	  ./system/configuration.nix
-	  nvf.nixosModules.default
+    homeManagerConfigurations = {
+      dvader = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+	extraSpecialArgs = { inherit inputs; };
+	modules = [
+	  ./users/dvader/home.nix
+	  inputs.stylix.homeModules.stylix
 	];
-	specialArgs = { inherit inputs; };
       };
     };
   };

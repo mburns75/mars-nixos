@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   imports = [
@@ -23,28 +23,28 @@
     enable = true;
   };
 
-  # Enable Stylix theming
+  # Stylix
   stylix = {
     enable = true;
-    image = ./wallpaper/gruvbox-subway.jpg; 
-    polarity = "dark";
-    fonts.monospace.name = "JetbrainsMono Nerd Font"; 
-    targets = {
-      neovim = {
-        enable = true;
-	colors.enable = true;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+    targets.kitty.enable = true;
+
+    fonts = {
+      monospace = {
+        package = pkgs.nerd-fonts.heavy-data;
+        name = "Heavy Data";
       };
-      btop.enable = true;
-      gtk.enable = true;
-      kitty = {
-        enable = false;
-	colors.enable = true;
-	fonts.enable = false;
+      sansSerif = {
+        package = pkgs.inter;
+        name = "Inter";
       };
-      hyprland.enable = true;
-      waybar = {
-        enable = true;
-	colors.enable = true;
+      serif = {
+        package = pkgs.prociono;
+        name = "Prociono";
+      };
+      emoji = {
+        package = pkgs.noto-fonts-color-emoji;
+        name = "Noto Color Emoji";
       };
     };
   };
@@ -611,11 +611,6 @@
   programs.kitty = {
     enable = true;
     enableGitIntegration = true;
-    themeFile = "GruvboxMaterialDarkHard";
-    font = {
-      name = "BigBlueTerm Nerd Font";
-      size = 11;
-    };
     settings = {
       disable_ligatures = false;
       enable_audio_bell = false;
@@ -721,12 +716,18 @@
     git
     git-crypt
     gnupg
-    nerd-fonts.jetbrains-mono
     nitch
     nwg-displays
     playerctl
     swww
     wget
+    inter
+    iosevka
+    prociono
+    noto-fonts-color-emoji
+    nerd-fonts.heavy-data
+    nerd-fonts.jetbrains-mono
+
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
