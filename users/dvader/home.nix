@@ -27,13 +27,13 @@
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark-dark.yaml";
-    targets.kitty.enable = true;
-    targets.neovim.enable = true;
+    targets.alacritty.enable = true;
 
     fonts = {
+      sizes.terminal = 9;
       monospace = {
-        package = pkgs.iosevka;
-        name = "Iosevka";
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font";
       };
       sansSerif = {
         package = pkgs.inter;
@@ -63,7 +63,7 @@
       ];
 
       # Program variables
-      "$terminal" = "kitty";
+      "$terminal" = "alacritty";
       "$fileManager" = "dolphin";
       "$browser" = "firefox";
       "$menu" = "walker";
@@ -367,7 +367,7 @@
         
         "custom/wallpaper" = {
           format = " ";
-          on-click = "pkill swww || swww init";
+          on-click = "sh -c 'swww restore'";
         };
       };
     };
@@ -609,23 +609,50 @@
     '';
   };
 
-  programs.kitty = {
+  programs.alacritty = {
     enable = true;
-    enableGitIntegration = true;
     settings = {
-      disable_ligatures = false;
-      enable_audio_bell = false;
-      cursor_trail = 3;
+      env = {
+        TERM = "xterm-256color";
+      };
+      font = {
+        normal = { 
+	  family = "JetBrainsMono Nerd Font";
+	  style = "Regular";
+	};
+        bold = {
+	  family = "JetBrainsMono Nerd Font";
+	  style = "Bold";
+	};
+        italic = { 
+	  family = "JetBrainsMono Nerd Font";
+	  style = "Italic";
+	};
+      };
+      
+      window = {
+        padding = {
+	  x = 14;
+          y = 14;
+	};
+        decorations = "None";
+      };
+      
+      keyboard = {
+        bindings = [
+	  {
+	    key = "Insert";
+	    mods = "Shift";
+	    action = "Paste"; 
+	  }
+          {
+	    key = "Insert";
+	    mods = "Control";
+	    action = "Copy";
+	  }
+        ];
+      };
     };
-    extraConfig = ''
-      cursor_shape block
-      url_style curly
-      remember_window_size no
-      window_padding_width 15
-      background_opacity 0.80
-      sync_to_monitor no
-      confirm_os_window_close 0 
-    '';
   };
 
   programs.eza = {
@@ -711,6 +738,7 @@
 
   # Home Packages Installed
   home.packages = with pkgs; [
+    alacritty
     brave
     brightnessctl
     btop
