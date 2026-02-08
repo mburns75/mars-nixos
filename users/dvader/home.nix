@@ -28,6 +28,7 @@
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark-dark.yaml";
     targets.alacritty.enable = true;
+    targets.starship.enable = true;
 
     fonts = {
       sizes.terminal = 9;
@@ -266,13 +267,14 @@
     
     settings = {
       mainBar = {
-        layer = "top";
-        
+        reload_style_on_change = true;
+	layer = "top";
+        position = "top";
+        spacing = 0;
+	height = 26;
+
         modules-left = [
           "custom/launcher"
-          "cpu"
-          "memory"
-          "network"
 	  "hyprland/workspaces"
         ];
         
@@ -281,303 +283,201 @@
         ];
         
         modules-right = [
-          "custom/wallpaper"
-          "backlight"
-          "pulseaudio"
+	  "group/tray-expander"
+	  "backlight"
+	  "bluetooth"
+	  "network"
+	  "pulseaudio"
+	  "cpu"
 	  "battery"
-          "custom/power"
         ];
         
         "hyprland/workspaces" = {
-          format = "{id}";
+          format = "{icon}";
           on-click = "activate";
-          all-outputs = true;
-          active-only = false;
-        };
-        
-        "pulseaudio" = {
-          tooltip = false;
-          scroll-step = 5;
-          format = "{icon} {volume}%";
-          format-muted = "{icon} {volume}%";
-          on-click = "pactl set-sink-mute @DEFAULT_SINK@ toggle";
-          format-icons = {
-            default = ["" "" ""];
+	  format-icons = {
+            default = "";
+            "1" = "1";
+            "2" = "2";
+            "3" = "3";
+            "4" = "4";
+            "5" = "5";
+            "6" = "6";
+            "7" = "7";
+            "8" = "8";
+            "9" = "9";
+            "10" = "0";
+            active = "󱓻";
+          };
+          "persistent-workspaces" = {
+            "1" = [];
+            "2" = [];
+            "3" = [];
+            "4" = [];
+            "5" = [];
           };
         };
-        
-        "network" = {
-          tooltip = false;
-          format-wifi = "   {essid} ";
-          format-ethernet = " 󰈀 ";
-	  on-click = "sh -c \"$terminal -e impala";
-        };
-        
-        "backlight" = {
-          tooltip = false;
-          format = " {}%";
-          interval = 1;
-          on-scroll-up = "brightnessctl -e4 -n2 set 5%+";
-          on-scroll-down = "brightnessctl -e4 -n2 set 5%-";
-        };
-        
-        "battery" = {
-          states = {
-            good = 95;
-            warning = 30;
-            critical = 20;
+          "custom/launcher" = {
+            format = "";
+            on-click = "${pkgs.walker}/bin/walker";
+            on-click-right = "xdg-terminal-exec";
           };
-          format = "{icon}  {capacity}%";
-          format-charging = "󱐋 {capacity}%";
-          format-plugged = " {capacity}%";
-          format-alt = "{time} {icon}";
-          format-icons = ["" "" "" "" ""];
-        };
-        
-        "clock" = {
-	  interval = 60;
-          format = "{:%I:%M %p}";
-	  format-alt = "{:%-m/%-d/%Y}";
-	  tooltip = true;
-	  tooltip-format = "{:%I:%M %p %A, %B %d, %Y}";
-        };
-        
-        "cpu" = {
-          interval = 15;
-          format = " {}%";
-          max-length = 10;
-        };
-        
-        "memory" = {
-          interval = 30;
-          format = " {}%";
-          max-length = 10;
-        };
-        
-        "custom/launcher" = {
-          format = " ";
-          on-click = "${pkgs.walker}/bin/walker";
-          on-click-right = "killall walker";
-        };
-        
-        "custom/power" = {
-          format = "󰐥 ";
-          on-click = "${pkgs.wlogout}/bin/wlogout";
-        };
-        
-        "custom/wallpaper" = {
-          format = " ";
-          on-click = "sh -c 'swww restore'";
-        };
+          "cpu" = {
+            interval = 5;
+            format = "󰍛";
+            on-click = "${pkgs.btop}/bin/btop";
+            on-click-right = "alacritty";
+          };
+          "clock" = {
+            format = "{:L%A %H:%M}";
+            format-alt = "{:L%d %B W%V %Y}";
+            tooltip = false;
+          };
+          "backlight" = {
+            tooltip = false;
+            format = " {}%";
+            interval = 1;
+            on-scroll-up = "brightnessctl -e4 -n2 set 5%+";
+            on-scroll-down = "brightnessctl -e4 -n2 set 5%-";
+          };
+          "network" = {
+            format-icons = ["󰤯" "󰤟" "󰤢" "󰤥" "󰤨"];
+            format = "{icon}";
+            format-wifi = "{icon}";
+            format-ethernet = "󰀂";
+            format-disconnected = "󰤮";
+            tooltip-format-wifi = "{essid} ({frequency} GHz)\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}";
+            tooltip-format-ethernet = "⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}";
+            tooltip-format-disconnected = "Disconnected";
+            interval = 3;
+            spacing = 1;
+            on-click = "${pkgs.alacritty}/bin/alacritty -e impala";
+          };
+          "battery" = {
+            format = "{capacity}% {icon}";
+            format-discharging = "{icon}";
+            format-charging = "{icon}";
+            format-plugged = "";
+            format-icons = {
+              charging = ["󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅"];
+              default = ["󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
+            };
+            format-full = "󰂅";
+            tooltip-format-discharging = "{power:>1.0f}W↓ {capacity}%";
+            tooltip-format-charging = "{power:>1.0f}W↑ {capacity}%";
+            interval = 5;
+            on-click = "omarchy-menu power";
+            states = {
+              warning = 20;
+              critical = 10;
+            };
+          };
+          "bluetooth" = {
+            format = "";
+            format-off = "󰂲";
+            format-disabled = "󰂲";
+            format-connected = "󰂱";
+            format-no-controller = "";
+            tooltip-format = "Devices connected: {num_connections}";
+            on-click = "${pkgs.alacritty}/bin/alacritty -e bluetui";
+          };
+          "pulseaudio" = {
+            format = "{icon}";
+            on-click = "${pkgs.alacritty}/bin/alacritty -e wiremix";
+            tooltip-format = "Playing at {volume}%";
+            scroll-step = 5;
+            format-muted = "";
+            format-icons = {
+              headphone = "";
+              headset = "";
+              default = ["" "" ""];
+            };
+          };
+          "group/tray-expander" = {
+            orientation = "inherit";
+            drawer = {
+              transition-duration = 600;
+              children-class = "tray-group-item";
+            };
+            modules = ["custom/expand-icon" "tray"];
+          };
+          "custom/expand-icon" = {
+            format = "";
+            tooltip = false;
+            on-scroll-up = "";
+            on-scroll-down = "";
+            on-scroll-left = "";
+            on-scroll-right = "";
+          };
+          "tray" = {
+            icon-size = 12;
+            spacing = 17;
+          };
       };
     };
-    
     style = ''
       * {
         border: none;
-        border-radius: 10px;
-        font-family: "JetbrainsMono Nerd Font";
-        font-size: 15px;
-        min-height: 10px;
+        border-radius: 0;
+        min-height: 0;
+        font-family: 'JetBrainsMono Nerd Font';
+        font-size: 12px;
       }
       
-      window#waybar {
-        background: transparent;
+      .modules-left {
+        margin-left: 8px;
       }
       
-      window#waybar.hidden {
-        opacity: 0.2;
-      }
-      
-      #window {
-        margin-top: 6px;
-        padding-left: 10px;
-        padding-right: 10px;
-        border-radius: 10px;
-        transition: none;
-        color: transparent;
-        background: transparent;
-      }
-      
-      #workspaces {
-        margin-top: 6px;
-        margin-left: 12px;
-        font-size: 4px;
-        margin-bottom: 0px;
-        border-radius: 10px;
-        background: #1d2021;
-        transition: none;
+      .modules-right {
+        margin-right: 8px;
       }
       
       #workspaces button {
-        transition: none;
-        color: #d4be98;
-        background: transparent;
-        font-size: 16px;
-        border-radius: 2px;
+        all: initial;
+        padding: 0 6px;
+        margin: 0 1.5px;
+        min-width: 9px;
       }
       
-      #workspaces button.active {
-        color: #a9b665;
-        border-top: 2px solid #a9b665;
-        border-bottom: 2px solid #a9b665;
+      #workspaces button.empty {
+        opacity: 0.5;
       }
       
-      #workspaces button:hover {
-        transition: none;
-        box-shadow: inherit;
-        text-shadow: inherit;
-        color: #d8a657;
-        border-color: #ea6962;
+      #cpu,
+      #battery,
+      #pulseaudio,
+      #custom-launcher,
+      
+      #tray {
+        margin-right: 16px;
       }
       
-      #workspaces button.active:hover {
-        color: #ea6962;
+      #bluetooth {
+        margin-right: 17px;
       }
       
       #network {
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-bottom: 0px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #7daea3;
+        margin-right: 13px;
       }
       
-      #pulseaudio {
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-bottom: 0px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #d8a657;
+      #custom-expand-icon {
+        margin-right: 18px;
       }
       
-      #battery {
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-bottom: 0px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #89b482;
+      tooltip {
+        padding: 2px;
       }
       
-      #battery.charging, #battery.plugged {
-        color: #1d2021;
-        background-color: #89b482;
+      #custom-update {
+        font-size: 10px;
       }
-      
-      #battery.critical:not(.charging) {
-        background-color: #ea6962;
-        color: #1d2021;
-        animation-name: blink;
-        animation-duration: 0.5s;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
-      }
-      
-      @keyframes blink {
-        to {
-          background-color: #ea6962;
-          color: #d4be98;
-        }
-      }
-      
-      #backlight {
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-bottom: 0px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #e78a4e;
-      }
-      
+  
       #clock {
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-bottom: 0px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #a9b665;
+        margin-left: 8.75px;
       }
       
-      #memory {
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        margin-bottom: 0px;
-        padding-right: 10px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #d3869b;
-      }
-      
-      #cpu {
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        margin-bottom: 0px;
-        padding-right: 10px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #7daea3;
-	font-family: "JetBrainsMono Nerd Font";
-      }
-      
-      #custom-launcher {
-        font-size: 24px;
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        padding-right: 5px;
-        border-radius: 10px;
-        transition: none;
-        color: #7daea3;
-        background: #1d2021;
-      }
-      
-      #custom-power {
-        font-size: 20px;
-        margin-top: 6px;
-        margin-left: 8px;
-        margin-right: 8px;
-        padding-left: 10px;
-        padding-right: 5px;
-        margin-bottom: 0px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #ea6962;
-      }
-      
-      #custom-wallpaper {
-        margin-top: 6px;
-        margin-left: 8px;
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-bottom: 0px;
-        border-radius: 10px;
-        transition: none;
-        color: #1d2021;
-        background: #a9b665;
+      .hidden {
+        opacity: 0;
       }
     '';
   };
@@ -653,6 +553,11 @@
         ];
       };
     };
+  };
+
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   programs.eza = {
