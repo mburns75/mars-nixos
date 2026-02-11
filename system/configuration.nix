@@ -90,8 +90,6 @@
     package = inputs.hyprland.packages."${pkgs.stdenv.hostPlatform.system}".hyprland;
   };
   programs.firefox.enable = true;
-  programs.waybar.enable = true;
-  programs.nm-applet.enable = true;
   programs.zsh.enable = true;
 
   # Allow unfree packages
@@ -99,13 +97,8 @@
 
   # System Package
   environment.systemPackages = with pkgs; [
-    bluetui
-    impala
     killall
     libnotify
-    swaynotificationcenter
-    wiremix
-    wlogout
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

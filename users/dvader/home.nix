@@ -82,6 +82,7 @@
       exec-once = [
         "swww-daemon"
 	"walker --gapplication-service"
+	"waybar"
       ];
 
       # General settings
@@ -184,7 +185,7 @@
         
         # Window management
         "$mainMod, W, killactive,"
-        "$mainMod, M, exit,"
+        "$mainMod, M, exec, hyprshutdown"
         "$mainMod, V, togglefloating,"
         "$mainMod, P, pseudo,"
         "$mainMod, J, togglesplit,"
@@ -379,7 +380,7 @@
           };
           "backlight" = {
             tooltip = false;
-            format = " {}%";
+            format = "{}%";
             interval = 1;
             on-scroll-up = "brightnessctl -e4 -n2 set 5%+";
             on-scroll-down = "brightnessctl -e4 -n2 set 5%-";
@@ -388,7 +389,7 @@
             format-icons = ["󰤯" "󰤟" "󰤢" "󰤥" "󰤨"];
             format = "{icon}";
             format-wifi = "{icon}";
-            format-ethernet = "󰀂";
+            format-ethernet = "󰈀";
             format-disconnected = "󰤮";
             tooltip-format-wifi = "{essid} ({frequency} GHz)\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}";
             tooltip-format-ethernet = "⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}";
@@ -729,17 +730,24 @@
   # Home Packages Installed
   home.packages = with pkgs; [
     alacritty
+    bluetui
     brave
     brightnessctl
     btop
     git
     git-crypt
     gnupg
+    hyprshutdown
+    impala
     nitch
     nwg-displays
     playerctl
+    swaynotificationcenter
     swww
     wget
+    wiremix
+
+    # Enable Fonts
     inter
     iosevka
     prociono
