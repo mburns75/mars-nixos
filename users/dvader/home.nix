@@ -29,6 +29,7 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark-dark.yaml";
     targets.alacritty.enable = true;
     targets.starship.enable = true;
+    targets.hyprlock.enable = true;
 
     fonts = {
       sizes.terminal = 9;
@@ -80,7 +81,6 @@
       # Autostart
       exec-once = [
         "swww-daemon"
-	"hyprpaper"
 	"walker --gapplication-service"
       ];
 
@@ -188,6 +188,7 @@
         "$mainMod, V, togglefloating,"
         "$mainMod, P, pseudo,"
         "$mainMod, J, togglesplit,"
+	"$mainMod, L, exec, hyprlock"
         
         # Focus movement
         "$mainMod, left, movefocus, l"
@@ -262,6 +263,49 @@
   };
 
   # Enabled Programs
+  programs.hyprlock = {
+    enable = true;
+    settings = {
+      general = {
+        hide_cursor = true;
+        ignore_empty_input = true;
+      };
+      animations = {
+        enabled = true;
+        fade_in = {
+          duration = 300;
+          bezier = "easeOutQuint";
+        };
+        fade_out = {
+          duration = 300;
+          bezier = "easeOutQuint";
+        };
+      };
+      bezier = [
+        "easeOutQuint, 0.23, 1, 0.32, 1"
+      ];
+      background = {
+        path = "~/.dotfiles/users/dvader/wallpaper/winter-sunset.png";
+        blur_passes = 3;
+        blur_size = 8;
+      };
+      input-field = {
+        size = "650, 100";
+        position = "0, 0";
+	halign = "center";
+	valign = "center";
+        monitor = "";
+        dots_center = true;
+        fade_on_empty = false;
+        outline_thickness = 2;
+        placeholder_text = ''Enter Password'';
+	fail_text = ''<i>$FAIL ($ATTEMPTS)</i>''; 
+        shadow_passes = 0;
+	rounding = 0;
+      };
+    };
+  };
+
   programs.waybar = {
     enable = true;
     
@@ -494,6 +538,10 @@
       marksman
       ruff
       ];
+    extraConfig = ''
+      set number
+      set relativenumber
+    '';
   };
 
   programs.zsh = {
@@ -631,6 +679,43 @@
       }
     '';
     };
+
+  # Enable Services
+  services.hypridle = {
+    enable = true;
+    settings = {
+      general = {
+          lock_cmd = "pidof hyprlock || hyprlock";       # avoid starting multiple hyprlock instances.
+          before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
+          after_sleep_cmd = "hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
+      };
+      listener = [
+        {
+          timeout = 150;                                # 2.5min.
+          on-timeout = "brightnessctl -s set 10";         # set monitor backlight to minimum, avoid 0 on OLED monitor.
+          on-resume = "brightnessctl -r";                 # monitor backlight restore.
+        }
+        {
+          timeout = 150;                                         # 2.5min.
+          on-timeout = "brightnessctl -sd rgb:kbd_backlight set 0"; # turn off keyboard backlight.
+          on-resume = "brightnessctl -rd rgb:kbd_backlight";        # turn on keyboard backlight.
+        }
+        {
+          timeout = 300;                                 # 5min
+          on-timeout = "loginctl lock-session";          # lock screen when timeout has passed
+        }
+        {
+          timeout = 330;                                               # 5.5min
+          on-timeout = "hyprctl dispatch dpms off";                    # screen off when timeout has passed
+          on-resume = "hyprctl dispatch dpms on && brightnessctl -r";  # screen on when activity is detected after timeout has fired.
+        }
+        {
+          timeout = 1800;                                # 30min
+          on-timeout = "systemctl suspend";                # suspend pc
+        }
+      ];
+    };
+  };
 
   services.gpg-agent = {
     enable = true;
