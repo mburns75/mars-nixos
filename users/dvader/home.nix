@@ -27,9 +27,20 @@
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark-dark.yaml";
-    targets.alacritty.enable = true;
-    targets.starship.enable = true;
-    targets.hyprlock.enable = true;
+    targets = {
+      alacritty.enable = true;
+      starship.enable = true;
+      hyprlock.enable = true;
+      nixos-icons.enable = true;
+      swaync.enable = true;
+      waybar.enable = true;
+    };
+    
+    cursor = {
+      name = "Bibata-Modern-Ice";
+      package = pkgs.bibata-cursors;
+      size = 10;
+    };
 
     fonts = {
       sizes.terminal = 9;

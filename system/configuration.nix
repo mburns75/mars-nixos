@@ -91,7 +91,11 @@
   };
   programs.firefox.enable = true;
   programs.zsh.enable = true;
-
+  programs.steam = {
+    enable = true;
+    gamescopeSession.enable = true;
+  };
+  programs.gamemode.enable = true;
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -99,7 +103,12 @@
   environment.systemPackages = with pkgs; [
     killall
     libnotify
+    protonup-ng
   ];
+
+  environment.sessionVariables = {
+    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/dvader/.steam/root/compatibilitytools.d";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
