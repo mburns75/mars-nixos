@@ -775,6 +775,7 @@
     wget
     wiremix
     zoom-us
+    inputs.tsui.packages.${pkgs.system}.tsui
 
     # Enable Fonts
     inter

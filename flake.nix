@@ -20,7 +20,6 @@
     };
     hyprland.url = "github:hyprwm/Hyprland";
     elephant.url = "github:abenz1267/elephant";
-
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, ... }: 
