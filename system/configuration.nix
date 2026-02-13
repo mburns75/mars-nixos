@@ -101,6 +101,7 @@
 
   # System Package
   environment.systemPackages = with pkgs; [
+    gvfs
     killall
     libnotify
     protonup-ng
@@ -122,7 +123,7 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
-
+  services.gvfs.enable = true;
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];

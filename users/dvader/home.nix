@@ -26,7 +26,8 @@
   # Stylix
   stylix = {
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark-dark.yaml";
+    autoEnable = true;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyodark.yaml";
     targets = {
       alacritty.enable = true;
       starship.enable = true;
@@ -35,7 +36,7 @@
       swaync.enable = true;
       waybar.enable = true;
     };
-    
+
     cursor = {
       name = "Bibata-Modern-Ice";
       package = pkgs.bibata-cursors;
@@ -63,6 +64,14 @@
     };
   };
 
+  # Enable GTK for Icon management
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "kora";
+      package = pkgs.kora-icon-theme;
+    };
+  };
   # Hyperland
   wayland.windowManager.hyprland = {
     enable = true;
@@ -77,7 +86,7 @@
 
       # Program variables
       "$terminal" = "alacritty";
-      "$fileManager" = "dolphin";
+      "$fileManager" = "thunar";
       "$browser" = "firefox";
       "$menu" = "walker";
       "$mainMod" = "SUPER";
@@ -734,9 +743,7 @@
     pinentry.package = pkgs.pinentry-qt;
   };
 
-  services.swaync = {
-    enable = true;
-  };
+  services.swaync.enable = true;
 
   # Home Packages Installed
   home.packages = with pkgs; [
@@ -745,18 +752,29 @@
     brave
     brightnessctl
     btop
+    calibre
     git
     git-crypt
     gnupg
+    gvfs
     hyprshutdown
     impala
+    kora-icon-theme
+    libreoffice
     nitch
     nwg-displays
     playerctl
     swaynotificationcenter
     swww
+    telegram-desktop
+    thunar
+    thunar-archive-plugin
+    thunar-volman
+    tumbler
+    vlc
     wget
     wiremix
+    zoom-us
 
     # Enable Fonts
     inter
