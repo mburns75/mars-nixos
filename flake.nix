@@ -20,6 +20,11 @@
     };
     hyprland.url = "github:hyprwm/Hyprland";
     elephant.url = "github:abenz1267/elephant";
+
+  tsui = {
+      url = "github:neuralink/tsui";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, home-manager, ... }: 

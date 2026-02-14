@@ -125,7 +125,10 @@
   # services.openssh.enable = true;
   services = {
     gvfs.enable = true;
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      extraUpFlags = [ "--operator=dvader"];
+    };
   };
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

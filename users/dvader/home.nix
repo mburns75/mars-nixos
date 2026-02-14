@@ -201,6 +201,7 @@
         "$mainMod, F, exec, $fileManager"
         "$mainMod, SPACE, exec, $menu"
         "$mainMod, A, exec, $terminal -e wiremix"
+	"$mainMod, T, exec, $terminal -e tsui"
         "$mainMod SHIFT, B, exec, $browser"
         
         # Window management
@@ -775,7 +776,6 @@
     wget
     wiremix
     zoom-us
-    inputs.tsui.packages.${pkgs.system}.tsui
 
     # Enable Fonts
     inter
@@ -784,6 +784,29 @@
     noto-fonts-color-emoji
     nerd-fonts.heavy-data
     nerd-fonts.jetbrains-mono
+
+    # Build tsui from source
+    (pkgs.buildGoModule rec {
+      pname = "tsui";
+      version = "0.0.1";
+      
+      src = inputs.tsui;
+      
+      vendorHash = "sha256-FIbkPE5KQ4w7Tc7kISQ7ZYFZAoMNGiVlFWzt8BPCf+A=";
+      
+      nativeBuildInputs = [ pkgs.pkg-config ];
+      buildInputs = [ pkgs.xorg.libX11 ];
+      
+      ldflags = [ "-s" "-w" "-X github.com/neuralinkcorp/tsui/version.Version=${version}" ];
+      
+      meta = with lib; {
+        description = "An elegant TUI for configuring Tailscale";
+        homepage = "https://github.com/neuralink/tsui";
+        license = licenses.mit;
+        maintainers = [];
+        platforms = platforms.linux;
+      };
+    })
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
